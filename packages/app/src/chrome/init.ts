@@ -199,30 +199,49 @@ function initFeaturesDropdown() {
 }
 
 function initTheme() {
-  // Check for saved preference or system preference
-  const saved = localStorage.getItem('saw-theme');
+  // Check for saved preferences
+  const savedTheme = localStorage.getItem('saw-theme');
+  const savedGlass = localStorage.getItem('saw-glass');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (prefersDark ? 'dark' : 'light');
+  
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  const glass = savedGlass === 'true';
   
   document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-glass', String(glass));
   
-  // Add theme toggle to top bar
+  // Add toggles to top bar
   const topBar = document.getElementById('top-bar');
   if (topBar) {
-    const toggle = document.createElement('button');
-    toggle.className = 'theme-toggle';
-    toggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
-    toggle.addEventListener('click', () => {
+    // Glass toggle
+    const glassToggle = document.createElement('button');
+    glassToggle.className = 'glass-toggle';
+    glassToggle.textContent = glass ? 'Solid' : 'Glass';
+    glassToggle.title = 'Toggle iOS-style glass blur effect';
+    glassToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-glass') === 'true';
+      const next = !current;
+      document.documentElement.setAttribute('data-glass', String(next));
+      localStorage.setItem('saw-glass', String(next));
+      glassToggle.textContent = next ? 'Solid' : 'Glass';
+    });
+    topBar.appendChild(glassToggle);
+    
+    // Theme toggle
+    const themeToggle = document.createElement('button');
+    themeToggle.className = 'theme-toggle';
+    themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    themeToggle.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('saw-theme', next);
-      toggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+      themeToggle.textContent = next === 'dark' ? 'Light' : 'Dark';
       
       // Dispatch event for viewport background update
       window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: next } }));
     });
-    topBar.appendChild(toggle);
+    topBar.appendChild(themeToggle);
   }
   
   // Listen for system theme changes
