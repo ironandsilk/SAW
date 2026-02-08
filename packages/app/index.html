@@ -23,6 +23,92 @@
           <button class="view-btn" data-view="side">Side</button>
         </nav>
         <div class="nav-dropdown">
+          <button class="nav-dropdown-btn" id="create-btn">Create</button>
+          <div class="nav-dropdown-content create-dropdown" id="create-dropdown">
+            <div class="create-panel" id="create-panel">
+              <div class="create-section">
+                <div class="create-section-title">Primitives</div>
+                <div class="create-items">
+                  <button class="create-item" data-create="cube" title="Cube">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
+                      <path d="M12 22V12"/>
+                      <path d="M2 7l10 5"/>
+                      <path d="M22 7l-10 5"/>
+                    </svg>
+                    <span>Cube</span>
+                  </button>
+                  <button class="create-item" data-create="sphere" title="Sphere">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <circle cx="12" cy="12" r="10"/>
+                      <ellipse cx="12" cy="12" rx="10" ry="4"/>
+                      <path d="M12 2v20"/>
+                    </svg>
+                    <span>Sphere</span>
+                  </button>
+                  <button class="create-item" data-create="pyramid" title="Pyramid">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L2 22h20L12 2z"/>
+                      <path d="M12 2v20"/>
+                      <path d="M12 22L2 22"/>
+                    </svg>
+                    <span>Pyramid</span>
+                  </button>
+                  <button class="create-item" data-create="cylinder" title="Cylinder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <ellipse cx="12" cy="5" rx="8" ry="3"/>
+                      <path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
+                    </svg>
+                    <span>Cylinder</span>
+                  </button>
+                  <button class="create-item" data-create="torus" title="Torus">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <ellipse cx="12" cy="12" rx="10" ry="4"/>
+                      <ellipse cx="12" cy="12" rx="4" ry="1.5"/>
+                    </svg>
+                    <span>Torus</span>
+                  </button>
+                  <button class="create-item" data-create="plane" title="Plane">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M2 12L12 6l10 6-10 6-10-6z"/>
+                    </svg>
+                    <span>Plane</span>
+                  </button>
+                </div>
+              </div>
+              <div class="create-section">
+                <div class="create-section-title">Complex</div>
+                <div class="create-items">
+                  <button class="create-item" data-create="humanoid" title="Humanoid Rig">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <circle cx="12" cy="4" r="2"/>
+                      <path d="M12 6v6"/>
+                      <path d="M8 8l4 2 4-2"/>
+                      <path d="M12 12l-4 8"/>
+                      <path d="M12 12l4 8"/>
+                    </svg>
+                    <span>Humanoid</span>
+                  </button>
+                  <button class="create-item" data-create="terrain" title="Terrain">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M2 20L8 10l4 6 4-8 6 12H2z"/>
+                    </svg>
+                    <span>Terrain</span>
+                  </button>
+                </div>
+              </div>
+              <div class="create-mode-toggle">
+                <button class="mode-toggle-btn" id="create-mode-toggle" title="Toggle body-locked radial menu">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-dropdown">
           <button class="nav-dropdown-btn" id="features-btn" title="Product development progress and themes">Features</button>
           <div class="nav-dropdown-content" id="features-dropdown">
             <div id="features-timeline"></div>

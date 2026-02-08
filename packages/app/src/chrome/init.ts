@@ -91,6 +91,9 @@ export function initChrome(_viewport: SpatialViewport, _camera: BryceCamera) {
   // Initialize features dropdown
   initFeaturesDropdown();
   
+  // Initialize create panel
+  initCreatePanel();
+  
   // Add chrome-specific styles
   addChromeStyles();
 }
@@ -448,6 +451,86 @@ function initTheme() {
       }
       window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme } }));
     }
+  });
+}
+
+function initCreatePanel() {
+  const createBtn = document.getElementById('create-btn');
+  const dropdown = createBtn?.closest('.nav-dropdown');
+  const panel = document.getElementById('create-panel');
+  const modeToggle = document.getElementById('create-mode-toggle');
+  
+  if (!createBtn || !dropdown || !panel || !modeToggle) return;
+  
+  let isRadialMode = localStorage.getItem('saw-create-mode') === 'radial';
+  
+  // Apply saved mode
+  if (isRadialMode) {
+    panel.classList.add('radial-mode');
+    document.body.appendChild(panel);
+  }
+  
+  // Toggle dropdown (only in normal mode)
+  createBtn.addEventListener('click', () => {
+    if (isRadialMode) {
+      // In radial mode, toggle visibility of body-appended panel
+      panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    } else {
+      dropdown.classList.toggle('open');
+    }
+  });
+  
+  // Close on click outside (normal mode)
+  document.addEventListener('click', (e) => {
+    if (!isRadialMode && !dropdown.contains(e.target as Node)) {
+      dropdown.classList.remove('open');
+    }
+    // In radial mode, close if clicking outside panel
+    if (isRadialMode && !panel.contains(e.target as Node) && e.target !== createBtn) {
+      panel.style.display = 'none';
+    }
+  });
+  
+  // Mode toggle
+  modeToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isRadialMode = !isRadialMode;
+    localStorage.setItem('saw-create-mode', isRadialMode ? 'radial' : 'dropdown');
+    
+    if (isRadialMode) {
+      // Switch to radial mode
+      panel.classList.add('radial-mode');
+      document.body.appendChild(panel);
+      panel.style.display = 'flex';
+      dropdown.classList.remove('open');
+    } else {
+      // Switch to dropdown mode
+      panel.classList.remove('radial-mode');
+      panel.style.display = '';
+      document.getElementById('create-dropdown')?.appendChild(panel);
+      dropdown.classList.add('open');
+    }
+  });
+  
+  // Create item click handlers
+  panel.querySelectorAll('.create-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const createType = (item as HTMLElement).dataset.create;
+      console.log(`Create: ${createType}`);
+      
+      // Dispatch event for viewport to handle
+      window.dispatchEvent(new CustomEvent('create-object', { 
+        detail: { type: createType } 
+      }));
+      
+      // Close panel after creation
+      if (isRadialMode) {
+        panel.style.display = 'none';
+      } else {
+        dropdown.classList.remove('open');
+      }
+    });
   });
 }
 

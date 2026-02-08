@@ -14,7 +14,12 @@ with epic/story linking for production tracking.
 
 ### Added
 - **Chat panel (TONKA)** — Bottom-left, edit the editor from within
-- **Theme Hierarchy panel** — Toggle modules, track versions per theme
+- **Features dropdown** — Horizontal timeline, click to see epics/stories
+- **Feature detail panel** — View theme plan with all epics and stories
+- **Eye menu** — Animated expanding menu for Glass/Theme toggles
+- **iOS Glass effect** — Toggle liquid blur on all UI elements
+- **Create panel** — Primitives (cube, sphere, pyramid, cylinder, torus, plane, humanoid, terrain)
+- **Body-locked radial mode** — Toggle Create panel to chest-locked dish UI
 - Progress bars per epic
 - Module on/off switches
 
