@@ -7,6 +7,7 @@
 
 import * as THREE from 'three';
 import type { WebShell } from '../shell/WebShell';
+import { DishMenu3D } from './UI3D';
 
 // Theme colors
 const THEMES = {
@@ -28,10 +29,12 @@ export class SpatialViewport {
   readonly scene: THREE.Scene;
   readonly camera: THREE.PerspectiveCamera;
   readonly renderer: THREE.WebGLRenderer;
+  readonly createDish: DishMenu3D;
   
   private shell: WebShell;
   private grid: THREE.GridHelper | null = null;
   private ground: THREE.Mesh | null = null;
+  private mouse = new THREE.Vector2();
   
   constructor(shell: WebShell) {
     this.shell = shell;
@@ -86,6 +89,46 @@ export class SpatialViewport {
     
     // Setup grid and axes
     this.setupHelpers();
+    
+    // Setup 3D UI
+    this.createDish = new DishMenu3D(this.camera);
+    this.scene.add(this.createDish.group);
+    
+    this.createDish.setItems([
+      { id: 'cube', label: 'Cube', color: 0x4a9eff },
+      { id: 'sphere', label: 'Sphere', color: 0xff8c42 },
+      { id: 'pyramid', label: 'Pyramid', color: 0x42ff8c },
+      { id: 'cylinder', label: 'Cylinder', color: 0xff42a0 },
+      { id: 'torus', label: 'Torus', color: 0xa042ff },
+      { id: 'plane', label: 'Plane', color: 0x42f0ff },
+      { id: 'humanoid', label: 'Humanoid', color: 0xffff42 },
+      { id: 'terrain', label: 'Terrain', color: 0x8cff42 },
+    ], (id) => {
+      console.log('3D UI Create:', id);
+      window.dispatchEvent(new CustomEvent('create-object', { detail: { type: id } }));
+    });
+    
+    // Mouse tracking for 3D UI
+    const canvas = shell.getCanvas();
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    });
+    
+    canvas.addEventListener('click', () => {
+      this.createDish.handleClick(this.mouse);
+    });
+    
+    // Listen for toggle from HTML UI
+    window.addEventListener('toggle-3d-create-menu', () => {
+      this.createDish.toggle();
+    });
+    
+    // Glass mode sync
+    window.addEventListener('glass-mode-change', ((e: CustomEvent) => {
+      this.createDish.setGlassMode(e.detail.enabled);
+    }) as EventListener);
   }
   
   private setupLighting() {
@@ -209,6 +252,10 @@ export class SpatialViewport {
   }
   
   render() {
+    // Update body-locked 3D UI
+    this.createDish.update();
+    this.createDish.checkInteraction(this.mouse);
+    
     this.renderer.render(this.scene, this.camera);
   }
   

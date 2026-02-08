@@ -493,7 +493,8 @@ function initCreatePanel() {
   
   if (!createBtn || !dropdown || !panel || !modeToggle) return;
   
-  let isRadialMode = localStorage.getItem('saw-create-mode') === 'radial';
+  const savedMode = localStorage.getItem('saw-create-mode');
+  let isRadialMode = savedMode === 'radial';
   
   // Apply saved mode
   if (isRadialMode) {
@@ -501,9 +502,14 @@ function initCreatePanel() {
     document.body.appendChild(panel);
   }
   
-  // Toggle dropdown (only in normal mode)
+  // 3D mode handled separately - will be initialized when viewport ready
+  
+  // Toggle dropdown (depends on mode)
   createBtn.addEventListener('click', () => {
-    if (isRadialMode) {
+    if (is3DMode) {
+      // In 3D mode, toggle 3D menu in viewport
+      window.dispatchEvent(new CustomEvent('toggle-3d-create-menu'));
+    } else if (isRadialMode) {
       // In radial mode, toggle visibility of body-appended panel
       panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
     } else {
@@ -522,21 +528,35 @@ function initCreatePanel() {
     }
   });
   
-  // Mode toggle
+  let is3DMode = localStorage.getItem('saw-create-mode') === '3d';
+  
+  // Mode toggle - cycles: dropdown -> radial -> 3D -> dropdown
   modeToggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    isRadialMode = !isRadialMode;
-    localStorage.setItem('saw-create-mode', isRadialMode ? 'radial' : 'dropdown');
     
-    if (isRadialMode) {
-      // Switch to radial mode
+    if (!isRadialMode && !is3DMode) {
+      // dropdown -> radial
+      isRadialMode = true;
+      is3DMode = false;
+      localStorage.setItem('saw-create-mode', 'radial');
       panel.classList.add('radial-mode');
       document.body.appendChild(panel);
       panel.style.display = 'flex';
       dropdown.classList.remove('open');
-    } else {
-      // Switch to dropdown mode
+    } else if (isRadialMode && !is3DMode) {
+      // radial -> 3D
+      isRadialMode = false;
+      is3DMode = true;
+      localStorage.setItem('saw-create-mode', '3d');
       panel.classList.remove('radial-mode');
+      panel.style.display = 'none';
+      // Show 3D menu
+      window.dispatchEvent(new CustomEvent('toggle-3d-create-menu'));
+    } else {
+      // 3D -> dropdown
+      isRadialMode = false;
+      is3DMode = false;
+      localStorage.setItem('saw-create-mode', 'dropdown');
       panel.style.display = '';
       document.getElementById('create-dropdown')?.appendChild(panel);
       dropdown.classList.add('open');
