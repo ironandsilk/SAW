@@ -8,12 +8,30 @@
 import * as THREE from 'three';
 import type { WebShell } from '../shell/WebShell';
 
+// Theme colors
+const THEMES = {
+  dark: {
+    background: 0x1a1a1e,
+    gridMajor: 0x444444,
+    gridMinor: 0x2a2a2a,
+    ground: 0x2a2a2e,
+  },
+  light: {
+    background: 0xd0d0d8,
+    gridMajor: 0xa0a0a8,
+    gridMinor: 0xc0c0c8,
+    ground: 0xc8c8cc,
+  },
+};
+
 export class SpatialViewport {
   readonly scene: THREE.Scene;
   readonly camera: THREE.PerspectiveCamera;
   readonly renderer: THREE.WebGLRenderer;
   
   private shell: WebShell;
+  private grid: THREE.GridHelper | null = null;
+  private ground: THREE.Mesh | null = null;
   
   constructor(shell: WebShell) {
     this.shell = shell;
@@ -21,9 +39,18 @@ export class SpatialViewport {
     const metrics = shell.getDisplayMetrics();
     const canvas = shell.getCanvas();
     
+    // Get initial theme
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const colors = THEMES[theme as keyof typeof THEMES];
+    
     // Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x1a1a1e);
+    this.scene.background = new THREE.Color(colors.background);
+    
+    // Listen for theme changes
+    window.addEventListener('theme-change', ((e: CustomEvent) => {
+      this.applyTheme(e.detail.theme);
+    }) as EventListener);
     
     // Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -87,10 +114,13 @@ export class SpatialViewport {
   }
   
   private setupHelpers() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const colors = THEMES[theme as keyof typeof THEMES];
+    
     // Ground grid
-    const grid = new THREE.GridHelper(100, 100, 0x444444, 0x2a2a2a);
-    grid.position.y = 0;
-    this.scene.add(grid);
+    this.grid = new THREE.GridHelper(100, 100, colors.gridMajor, colors.gridMinor);
+    this.grid.position.y = 0;
+    this.scene.add(this.grid);
     
     // Axes helper (subtle)
     const axes = new THREE.AxesHelper(5);
@@ -98,18 +128,42 @@ export class SpatialViewport {
     this.scene.add(axes);
   }
   
+  private applyTheme(theme: string) {
+    const colors = THEMES[theme as keyof typeof THEMES] || THEMES.dark;
+    
+    // Update background
+    this.scene.background = new THREE.Color(colors.background);
+    
+    // Update grid
+    if (this.grid) {
+      this.scene.remove(this.grid);
+      this.grid.dispose();
+      this.grid = new THREE.GridHelper(100, 100, colors.gridMajor, colors.gridMinor);
+      this.grid.position.y = 0;
+      this.scene.add(this.grid);
+    }
+    
+    // Update ground
+    if (this.ground) {
+      (this.ground.material as THREE.MeshStandardMaterial).color.setHex(colors.ground);
+    }
+  }
+  
   addTestScene() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const colors = THEMES[theme as keyof typeof THEMES];
+    
     // Ground plane
     const groundGeo = new THREE.PlaneGeometry(100, 100);
     const groundMat = new THREE.MeshStandardMaterial({ 
-      color: 0x2a2a2e,
+      color: colors.ground,
       roughness: 0.9,
       metalness: 0.1,
     });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    this.scene.add(ground);
+    this.ground = new THREE.Mesh(groundGeo, groundMat);
+    this.ground.rotation.x = -Math.PI / 2;
+    this.ground.receiveShadow = true;
+    this.scene.add(this.ground);
     
     // Some test objects
     const boxGeo = new THREE.BoxGeometry(2, 2, 2);

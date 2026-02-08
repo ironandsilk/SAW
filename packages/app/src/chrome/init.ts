@@ -21,28 +21,31 @@ export function initChrome(_viewport: SpatialViewport, _camera: BryceCamera) {
     });
   });
   
+  // Theme toggle
+  initTheme();
+  
   // Populate hierarchy (placeholder)
   const hierarchy = document.getElementById('hierarchy');
   if (hierarchy) {
     hierarchy.innerHTML = `
       <div class="tree-item">
-        <span class="tree-icon">📁</span>
+        <span class="tree-icon">&#9662;</span>
         <span class="tree-label">Scene</span>
       </div>
       <div class="tree-item" style="padding-left: 16px;">
-        <span class="tree-icon">💡</span>
+        <span class="tree-icon">&#9728;</span>
         <span class="tree-label">Lights</span>
       </div>
       <div class="tree-item" style="padding-left: 16px;">
-        <span class="tree-icon">📦</span>
+        <span class="tree-icon">&#9632;</span>
         <span class="tree-label">Box</span>
       </div>
       <div class="tree-item" style="padding-left: 16px;">
-        <span class="tree-icon">🔵</span>
+        <span class="tree-icon">&#9679;</span>
         <span class="tree-label">Sphere</span>
       </div>
       <div class="tree-item" style="padding-left: 16px;">
-        <span class="tree-icon">🔷</span>
+        <span class="tree-icon">&#9644;</span>
         <span class="tree-label">Cylinder</span>
       </div>
     `;
@@ -84,6 +87,45 @@ export function initChrome(_viewport: SpatialViewport, _camera: BryceCamera) {
   
   // Add chrome-specific styles
   addChromeStyles();
+}
+
+function initTheme() {
+  // Check for saved preference or system preference
+  const saved = localStorage.getItem('saw-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  
+  document.documentElement.setAttribute('data-theme', theme);
+  
+  // Add theme toggle to top bar
+  const topBar = document.getElementById('top-bar');
+  if (topBar) {
+    const toggle = document.createElement('button');
+    toggle.className = 'theme-toggle';
+    toggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('saw-theme', next);
+      toggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+      
+      // Dispatch event for viewport background update
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: next } }));
+    });
+    topBar.appendChild(toggle);
+  }
+  
+  // Listen for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('saw-theme')) {
+      const theme = e.matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      const toggle = document.querySelector('.theme-toggle');
+      if (toggle) toggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme } }));
+    }
+  });
 }
 
 function addChromeStyles() {

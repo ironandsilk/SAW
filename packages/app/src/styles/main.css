@@ -1,7 +1,16 @@
 /* SAW — Bryce 3D Inspired UI */
+/* Light/Dark theme support */
 
 :root {
-  /* Bryce color palette - metallic darks with accent highlights */
+  /* Panel sizing */
+  --panel-width: 240px;
+  --top-bar-height: 36px;
+  --bottom-bar-height: 24px;
+}
+
+/* === DARK THEME (default) === */
+:root,
+[data-theme="dark"] {
   --bg-dark: #1a1a1e;
   --bg-panel: #252529;
   --bg-panel-header: linear-gradient(180deg, #3a3a40 0%, #28282c 100%);
@@ -19,14 +28,41 @@
   --accent-orange: #ff8c42;
   --accent-green: #42ff8c;
   
-  /* Bryce-style bevels */
   --bevel-light: rgba(255, 255, 255, 0.08);
   --bevel-dark: rgba(0, 0, 0, 0.4);
   
-  /* Panel sizing */
-  --panel-width: 240px;
-  --top-bar-height: 36px;
-  --bottom-bar-height: 24px;
+  --viewport-bg: #1a1a1e;
+  --grid-major: #444444;
+  --grid-minor: #2a2a2a;
+  --ground-color: #2a2a2e;
+}
+
+/* === LIGHT THEME === */
+[data-theme="light"] {
+  --bg-dark: #e8e8ec;
+  --bg-panel: #f0f0f4;
+  --bg-panel-header: linear-gradient(180deg, #ffffff 0%, #e8e8ec 100%);
+  --bg-input: #ffffff;
+  
+  --border-dark: #c0c0c8;
+  --border-light: #d0d0d8;
+  --border-highlight: #a0a0a8;
+  
+  --text-primary: #1a1a1e;
+  --text-secondary: #606068;
+  --text-muted: #888890;
+  
+  --accent-blue: #2080e0;
+  --accent-orange: #e06820;
+  --accent-green: #20a060;
+  
+  --bevel-light: rgba(255, 255, 255, 0.8);
+  --bevel-dark: rgba(0, 0, 0, 0.1);
+  
+  --viewport-bg: #d0d0d8;
+  --grid-major: #a0a0a8;
+  --grid-minor: #c0c0c8;
+  --ground-color: #c8c8cc;
 }
 
 * {
@@ -96,6 +132,9 @@ html, body {
   font-size: 14px;
   letter-spacing: 2px;
   color: var(--accent-blue);
+}
+
+[data-theme="dark"] .logo {
   text-shadow: 0 0 8px rgba(74, 158, 255, 0.4);
 }
 
@@ -128,7 +167,6 @@ html, body {
 }
 
 .mode-indicator {
-  margin-left: auto;
   padding: 4px 12px;
   background: var(--bg-input);
   border: 1px solid var(--border-dark);
@@ -136,6 +174,24 @@ html, body {
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--accent-green);
+}
+
+.theme-toggle {
+  margin-left: auto;
+  background: var(--bg-input);
+  border: 1px solid var(--border-dark);
+  border-top-color: var(--border-light);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border-color: var(--border-highlight);
 }
 
 /* === PANELS === */
@@ -245,16 +301,29 @@ html, body {
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  border: 2px solid var(--border-dark);
+  cursor: grab;
+  position: relative;
+}
+
+[data-theme="dark"] .nav-ball {
   background: 
     radial-gradient(ellipse 60% 40% at 30% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
     radial-gradient(ellipse 80% 80% at 50% 50%, #3a3a40 0%, #1a1a1e 100%);
-  border: 2px solid var(--border-dark);
   box-shadow: 
     inset 0 2px 4px var(--bevel-light),
     inset 0 -2px 4px var(--bevel-dark),
     0 4px 12px rgba(0, 0, 0, 0.5);
-  cursor: grab;
-  position: relative;
+}
+
+[data-theme="light"] .nav-ball {
+  background: 
+    radial-gradient(ellipse 60% 40% at 30% 25%, rgba(255,255,255,0.8) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 80% at 50% 50%, #f0f0f4 0%, #d0d0d8 100%);
+  box-shadow: 
+    inset 0 2px 4px var(--bevel-light),
+    inset 0 -2px 4px var(--bevel-dark),
+    0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .nav-ball::after {
