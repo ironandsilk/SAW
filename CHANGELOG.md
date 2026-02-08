@@ -12,6 +12,12 @@ with epic/story linking for production tracking.
 ### In Progress
 - Epic 1.1: Camera System (partial)
 
+### Added
+- **Chat panel (TONKA)** — Bottom-left, edit the editor from within
+- **Theme Hierarchy panel** — Toggle modules, track versions per theme
+- Progress bars per epic
+- Module on/off switches
+
 ---
 
 ## [0.1.0] - 2026-02-07
