@@ -122,8 +122,8 @@ function initChat() {
     const msg = document.createElement('div');
     msg.className = `chat-message ${role}`;
     msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
+    messages!.appendChild(msg);
+    messages!.scrollTop = messages!.scrollHeight;
   }
   
   send.addEventListener('click', sendMessage);
@@ -278,7 +278,7 @@ function initFeaturesDropdown() {
   
   function closeFeatureDetail() {
     detailPanel!.classList.remove('open');
-    timeline.querySelectorAll('.feature-item').forEach(item => {
+    timeline!.querySelectorAll('.feature-item').forEach(item => {
       item.classList.remove('selected');
     });
   }
@@ -288,10 +288,10 @@ function initFeaturesDropdown() {
     if (!feature) return;
     
     // Mark selected
-    timeline.querySelectorAll('.feature-item').forEach(item => {
+    timeline!.querySelectorAll('.feature-item').forEach(item => {
       item.classList.remove('selected');
     });
-    timeline.querySelector(`[data-feature-id="${featureId}"]`)?.classList.add('selected');
+    timeline!.querySelector(`[data-feature-id="${featureId}"]`)?.classList.add('selected');
     
     // Build detail content
     const epicCount = feature.epics.length;
