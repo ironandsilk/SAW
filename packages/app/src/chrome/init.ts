@@ -88,8 +88,8 @@ export function initChrome(_viewport: SpatialViewport, _camera: BryceCamera) {
   // Initialize chat
   initChat();
   
-  // Initialize theme hierarchy
-  initThemeHierarchy();
+  // Initialize features dropdown
+  initFeaturesDropdown();
   
   // Add chrome-specific styles
   addChromeStyles();
@@ -132,78 +132,68 @@ function initChat() {
   });
 }
 
-function initThemeHierarchy() {
-  const container = document.getElementById('theme-hierarchy');
-  if (!container) return;
+function initFeaturesDropdown() {
+  const btn = document.getElementById('features-btn');
+  const dropdown = btn?.closest('.nav-dropdown');
+  const timeline = document.getElementById('features-timeline');
   
-  // Theme data - will be loaded from tracking/epics.json later
-  const themes = [
-    { id: 1, name: 'Camera & Navigation', status: 'in-progress', version: 'v0.1', active: true, epics: [
-      { name: 'Camera System', progress: 50 },
-      { name: 'Viewport Controls', progress: 0 },
-      { name: 'Input Abstraction', progress: 0 },
-    ]},
-    { id: 2, name: 'Environment Editing', status: 'todo', version: '-', active: true, epics: [] },
-    { id: 3, name: 'Object Editing', status: 'todo', version: '-', active: true, epics: [] },
-    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 5, name: 'World Modeling', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 7, name: 'Remote Control', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', active: false, epics: [] },
-    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', active: false, epics: [] },
+  if (!btn || !dropdown || !timeline) return;
+  
+  // Toggle dropdown
+  btn.addEventListener('click', () => {
+    dropdown.classList.toggle('open');
+  });
+  
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target as Node)) {
+      dropdown.classList.remove('open');
+    }
+  });
+  
+  // Feature data - will be loaded from tracking/epics.json later
+  const features = [
+    { id: 1, name: 'Camera & Navigation', status: 'in-progress', version: 'v0.1', progress: 25, active: true },
+    { id: 2, name: 'Environment Editing', status: 'todo', version: '-', progress: 0, active: true },
+    { id: 3, name: 'Object Editing', status: 'todo', version: '-', progress: 0, active: true },
+    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 5, name: 'World Modeling', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 7, name: 'Remote Control', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', progress: 0, active: false },
+    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', progress: 0, active: false },
   ];
   
-  container.innerHTML = themes.map(theme => `
-    <div class="theme-item" data-theme-id="${theme.id}">
-      <div class="theme-header">
-        <span class="theme-toggle">${theme.epics.length ? '>' : ''}</span>
-        <span class="theme-status ${theme.status}"></span>
-        <span class="theme-name">${theme.id}. ${theme.name}</span>
-        <span class="theme-version">${theme.version}</span>
-        <div class="theme-switch ${theme.active ? 'active' : ''}" data-theme-id="${theme.id}"></div>
+  timeline.innerHTML = features.map(feature => `
+    <div class="feature-item ${feature.active ? 'active' : ''}" data-feature-id="${feature.id}">
+      <div class="feature-header">
+        <span class="feature-id">${feature.id}</span>
+        <span class="feature-status ${feature.status}"></span>
       </div>
-      ${theme.epics.length ? `
-        <div class="epic-list">
-          ${theme.epics.map(epic => `
-            <div class="epic-item">
-              <span>${epic.name}</span>
-              <div class="epic-progress">
-                <div class="epic-progress-bar" style="width: ${epic.progress}%"></div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      ` : ''}
+      <div class="feature-name">${feature.name}</div>
+      <div class="feature-progress">
+        <div class="feature-progress-bar" style="width: ${feature.progress}%"></div>
+      </div>
+      <div class="feature-meta">
+        <span class="feature-version">${feature.version}</span>
+        <div class="feature-switch ${feature.active ? 'active' : ''}" data-feature-id="${feature.id}"></div>
+      </div>
     </div>
   `).join('');
   
-  // Toggle expand/collapse
-  container.querySelectorAll('.theme-header').forEach(header => {
-    header.addEventListener('click', (e) => {
-      // Don't toggle if clicking the switch
-      if ((e.target as HTMLElement).classList.contains('theme-switch')) return;
-      
-      const item = header.closest('.theme-item');
-      if (item) {
-        item.classList.toggle('expanded');
-        const toggle = header.querySelector('.theme-toggle');
-        if (toggle) {
-          toggle.textContent = item.classList.contains('expanded') ? 'v' : '>';
-        }
-      }
-    });
-  });
-  
   // Toggle active/inactive modules
-  container.querySelectorAll('.theme-switch').forEach(sw => {
+  timeline.querySelectorAll('.feature-switch').forEach(sw => {
     sw.addEventListener('click', (e) => {
       e.stopPropagation();
       sw.classList.toggle('active');
-      // Will dispatch event to actually enable/disable modules
-      const themeId = (sw as HTMLElement).dataset.themeId;
+      const item = sw.closest('.feature-item');
+      if (item) {
+        item.classList.toggle('active');
+      }
+      const featureId = (sw as HTMLElement).dataset.featureId;
       const active = sw.classList.contains('active');
-      console.log(`Theme ${themeId} ${active ? 'enabled' : 'disabled'}`);
+      console.log(`Feature ${featureId} ${active ? 'enabled' : 'disabled'}`);
     });
   });
 }
