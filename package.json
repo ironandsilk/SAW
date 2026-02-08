@@ -1,0 +1,20 @@
+{
+  "name": "saw",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Surpass All World — Spatial editor bridging sim and reality",
+  "scripts": {
+    "dev": "pnpm --filter @saw/app dev",
+    "build": "pnpm --filter @saw/app build",
+    "preview": "pnpm --filter @saw/app preview"
+  },
+  "keywords": [
+    "3d",
+    "spatial",
+    "world-model",
+    "robotics",
+    "editor"
+  ],
+  "author": "SAW Contributors",
+  "license": "MIT"
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAW — Surpass All World</title>
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Spatial viewport (THE interface) -->
+    <div id="viewport"></div>
+    
+    <!-- Chrome overlays -->
+    <div id="chrome">
+      <!-- Top bar -->
+      <header id="top-bar">
+        <div class="logo">SAW</div>
+        <nav class="nav-controls">
+          <button class="view-btn" data-view="perspective">Persp</button>
+          <button class="view-btn" data-view="top">Top</button>
+          <button class="view-btn" data-view="front">Front</button>
+          <button class="view-btn" data-view="side">Side</button>
+        </nav>
+        <div class="mode-indicator">
+          <span id="mode-text">EDIT</span>
+        </div>
+      </header>
+      
+      <!-- Left panel (hierarchy) -->
+      <aside id="panel-left" class="panel">
+        <div class="panel-header">
+          <span>Scene</span>
+          <button class="panel-collapse">−</button>
+        </div>
+        <div class="panel-content" id="hierarchy"></div>
+      </aside>
+      
+      <!-- Right panel (properties) -->
+      <aside id="panel-right" class="panel">
+        <div class="panel-header">
+          <span>Properties</span>
+          <button class="panel-collapse">−</button>
+        </div>
+        <div class="panel-content" id="properties"></div>
+      </aside>
+      
+      <!-- Bottom bar (status) -->
+      <footer id="bottom-bar">
+        <div class="status-left">
+          <span id="fps">-- FPS</span>
+          <span id="objects">0 objects</span>
+        </div>
+        <div class="status-center">
+          <span id="position">X: 0.00 Y: 0.00 Z: 0.00</span>
+        </div>
+        <div class="status-right">
+          <span id="grid-status">Grid: 1.0</span>
+          <span id="snap-status">Snap: OFF</span>
+        </div>
+      </footer>
+      
+      <!-- Navigation widget (Bryce-style) -->
+      <div id="nav-widget">
+        <div class="nav-ball" id="nav-ball"></div>
+        <div class="nav-controls-widget">
+          <button class="nav-btn" data-action="zoom-in">+</button>
+          <button class="nav-btn" data-action="zoom-out">−</button>
+          <button class="nav-btn" data-action="reset">⌂</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
