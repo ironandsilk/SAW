@@ -31,9 +31,33 @@
       <aside id="panel-left" class="panel">
         <div class="panel-header">
           <span>Scene</span>
-          <button class="panel-collapse">−</button>
+          <button class="panel-collapse">-</button>
         </div>
         <div class="panel-content" id="hierarchy"></div>
+      </aside>
+      
+      <!-- Chat panel (baby TONKA) -->
+      <aside id="panel-chat" class="panel">
+        <div class="panel-header">
+          <span>TONKA</span>
+          <button class="panel-collapse">-</button>
+        </div>
+        <div class="panel-content" id="chat">
+          <div id="chat-messages"></div>
+          <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Edit the editor..." />
+            <button id="chat-send">></button>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- Theme Hierarchy panel (production tracking) -->
+      <aside id="panel-themes" class="panel">
+        <div class="panel-header">
+          <span>Themes</span>
+          <button class="panel-collapse">-</button>
+        </div>
+        <div class="panel-content" id="theme-hierarchy"></div>
       </aside>
       
       <!-- Right panel (properties) -->
