@@ -285,6 +285,15 @@ html, body {
   max-width: 95vw;
 }
 
+.nav-dropdown-right .nav-dropdown-content {
+  left: auto;
+  right: 0;
+}
+
+.nav-dropdown-right .features-dropdown-content {
+  min-width: 900px;
+}
+
 .nav-dropdown-content.create-dropdown {
   min-width: auto;
   max-width: none;
@@ -690,6 +699,43 @@ html, body {
   font-size: 11px;
   color: var(--text-muted);
   font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.detail-git {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.detail-git-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.detail-git-link:hover {
+  text-decoration: underline;
+}
+
+.detail-git-link svg {
+  width: 12px;
+  height: 12px;
+}
+
+.feature-branch {
+  font-size: 8px;
+  color: var(--accent-blue);
+  font-family: 'SF Mono', 'Consolas', monospace;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.feature-branch:hover {
+  text-decoration: underline;
 }
 
 .detail-epics {

@@ -160,6 +160,8 @@ function initFeaturesDropdown() {
     }
   });
   
+  const REPO_URL = 'https://github.com/ironandsilk/SAW';
+  
   // Feature data with epics and stories
   const features = [
     { 
@@ -169,6 +171,8 @@ function initFeaturesDropdown() {
       version: 'v0.1', 
       progress: 25, 
       active: true,
+      branch: 'main',
+      commit: '9d6deef',
       epics: [
         { 
           id: '1.1', 
@@ -219,6 +223,8 @@ function initFeaturesDropdown() {
       version: '-', 
       progress: 0, 
       active: true,
+      branch: null,
+      commit: null,
       epics: [
         { id: '2.1', name: 'Scene Hierarchy', progress: 0, stories: [
           { name: 'Implement scene graph data structure', status: 'todo' },
@@ -229,42 +235,42 @@ function initFeaturesDropdown() {
         { id: '2.3', name: 'Environment Properties', progress: 0, stories: [] },
       ]
     },
-    { id: 3, name: 'Object Editing', status: 'todo', version: '-', progress: 0, active: true, epics: [
+    { id: 3, name: 'Object Editing', status: 'todo', version: '-', progress: 0, active: true, branch: null, commit: null, epics: [
       { id: '3.1', name: 'Object Hierarchy', progress: 0, stories: [] },
       { id: '3.2', name: 'Transform Tools', progress: 0, stories: [] },
       { id: '3.3', name: 'Object Properties Panel', progress: 0, stories: [] },
     ]},
-    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '4.1', name: 'Import Pipeline - 3D Formats', progress: 0, stories: [] },
       { id: '4.2', name: 'Import Pipeline - CAD Formats', progress: 0, stories: [] },
       { id: '4.3', name: 'Export Pipeline', progress: 0, stories: [] },
     ]},
-    { id: 5, name: 'World Modeling', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 5, name: 'World Modeling', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '5.1', name: 'Threshold System', progress: 0, stories: [] },
       { id: '5.2', name: 'World Model Abstraction', progress: 0, stories: [] },
       { id: '5.3', name: 'Vision Pipeline Hooks', progress: 0, stories: [] },
     ]},
-    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '6.1', name: 'Reality Capture', progress: 0, stories: [] },
       { id: '6.2', name: 'Scan & Reconstruction', progress: 0, stories: [] },
       { id: '6.3', name: 'Geospatial Anchoring', progress: 0, stories: [] },
     ]},
-    { id: 7, name: 'Remote Control', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 7, name: 'Remote Control', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '7.1', name: 'Control Mode System', progress: 0, stories: [] },
       { id: '7.2', name: 'Remote Input Pipeline', progress: 0, stories: [] },
       { id: '7.3', name: 'Agent Hierarchy Extension', progress: 0, stories: [] },
     ]},
-    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '8.1', name: 'Scene Serialization', progress: 0, stories: [] },
       { id: '8.2', name: 'Robotics Abstraction', progress: 0, stories: [] },
       { id: '8.3', name: 'Output Integration', progress: 0, stories: [] },
     ]},
-    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '9.1', name: 'Training Environment', progress: 0, stories: [] },
       { id: '9.2', name: 'VLA Policy Integration', progress: 0, stories: [] },
       { id: '9.3', name: 'Sim-to-Real Transfer', progress: 0, stories: [] },
     ]},
-    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', progress: 0, active: false, epics: [
+    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', progress: 0, active: false, branch: null, commit: null, epics: [
       { id: '10.1', name: 'Single Robot Connection', progress: 0, stories: [] },
       { id: '10.2', name: 'Robot Farms', progress: 0, stories: [] },
     ]},
@@ -313,6 +319,31 @@ function initFeaturesDropdown() {
         <span class="detail-stat">${epicCount} epics</span>
         <span class="detail-stat">${doneCount}/${storyCount} stories</span>
         <span class="detail-version">${feature.version}</span>
+        ${feature.branch || feature.commit ? `
+          <div class="detail-git">
+            ${feature.branch ? `
+              <a href="${REPO_URL}/tree/${feature.branch}" target="_blank" class="detail-git-link" title="View branch">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 3v12"/>
+                  <circle cx="6" cy="18" r="3"/>
+                  <circle cx="6" cy="6" r="3"/>
+                  <path d="M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                  <path d="M6 9c0 3 2 6 6 6s6-3 6-6"/>
+                </svg>
+                ${feature.branch}
+              </a>
+            ` : ''}
+            ${feature.commit ? `
+              <a href="${REPO_URL}/commit/${feature.commit}" target="_blank" class="detail-git-link" title="View commit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="4"/>
+                  <path d="M12 2v6M12 16v6"/>
+                </svg>
+                ${feature.commit}
+              </a>
+            ` : ''}
+          </div>
+        ` : ''}
       </div>
       <div class="detail-epics">
         ${feature.epics.map(epic => `
@@ -359,7 +390,7 @@ function initFeaturesDropdown() {
         <div class="feature-progress-bar" style="width: ${feature.progress}%"></div>
       </div>
       <div class="feature-meta">
-        <span class="feature-version">${feature.version}</span>
+        ${feature.branch ? `<a href="${REPO_URL}/tree/${feature.branch}" target="_blank" class="feature-branch" onclick="event.stopPropagation()">${feature.branch}</a>` : `<span class="feature-version">${feature.version}</span>`}
         <div class="feature-switch ${feature.active ? 'active' : ''}" data-feature-id="${feature.id}"></div>
       </div>
     </div>
