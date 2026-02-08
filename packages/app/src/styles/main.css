@@ -166,6 +166,17 @@ html, body {
   border-color: var(--accent-blue);
 }
 
+.view-btn.exo-toggle {
+  margin-left: 8px;
+  border-left: 2px solid var(--border-dark);
+  padding-left: 12px;
+}
+
+.view-btn.exo-toggle.active {
+  background: var(--accent-orange, #ff8c42);
+  border-color: var(--accent-orange, #ff8c42);
+}
+
 .mode-indicator {
   padding: 4px 12px;
   background: var(--bg-input);
