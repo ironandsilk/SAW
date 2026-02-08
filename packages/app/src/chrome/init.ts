@@ -563,20 +563,41 @@ function initCreatePanel() {
     }
   });
   
+  // Tab switching
+  panel.querySelectorAll('.create-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tabId = (tab as HTMLElement).dataset.tab;
+      
+      // Update tab states
+      panel.querySelectorAll('.create-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Show/hide content
+      panel.querySelectorAll('.create-tab-content').forEach(content => {
+        const contentId = (content as HTMLElement).dataset.tabContent;
+        (content as HTMLElement).style.display = contentId === tabId ? 'flex' : 'none';
+      });
+    });
+  });
+  
   // Create item click handlers
   panel.querySelectorAll('.create-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
       const createType = (item as HTMLElement).dataset.create;
-      console.log(`Create: ${createType}`);
+      const modelUrl = (item as HTMLElement).dataset.url;
+      console.log(`Create: ${createType}`, modelUrl ? `URL: ${modelUrl}` : '');
       
       // Dispatch event for viewport to handle
       window.dispatchEvent(new CustomEvent('create-object', { 
-        detail: { type: createType } 
+        detail: { type: createType, url: modelUrl } 
       }));
       
       // Close panel after creation
-      if (isRadialMode) {
+      if (is3DMode) {
+        // 3D mode closes via its own handler
+      } else if (isRadialMode) {
         panel.style.display = 'none';
       } else {
         dropdown.classList.remove('open');

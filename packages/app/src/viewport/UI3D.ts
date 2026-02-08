@@ -13,6 +13,14 @@ export interface DishMenuItem {
   label: string;
   icon?: string;
   color?: number;
+  url?: string;
+  category?: string;
+}
+
+export interface DishMenuCategory {
+  id: string;
+  label: string;
+  items: DishMenuItem[];
 }
 
 export class DishMenu3D {
@@ -22,12 +30,15 @@ export class DishMenu3D {
   private items: THREE.Mesh[] = [];
   private labels: THREE.Sprite[] = [];
   private dishBase: THREE.Mesh;
+  private centerToggle: THREE.Mesh | null = null;
+  private centerLabel: THREE.Sprite | null = null;
   private raycaster = new THREE.Raycaster();
   private hoveredItem: THREE.Mesh | null = null;
   
   private isVisible = false;
-  private menuItems: DishMenuItem[] = [];
-  private onSelect: ((id: string) => void) | null = null;
+  private categories: DishMenuCategory[] = [];
+  private currentCategoryIndex = 0;
+  private onSelect: ((id: string, url?: string) => void) | null = null;
   
   // Body-locked positioning
   private offsetY = -0.8;  // Below eye level
@@ -72,10 +83,16 @@ export class DishMenu3D {
     return mesh;
   }
   
-  setItems(items: DishMenuItem[], onSelect: (id: string) => void) {
-    this.menuItems = items;
+  setCategories(categories: DishMenuCategory[], onSelect: (id: string, url?: string) => void) {
+    this.categories = categories;
     this.onSelect = onSelect;
+    this.currentCategoryIndex = 0;
     this.rebuildItems();
+  }
+  
+  // Legacy support
+  setItems(items: DishMenuItem[], onSelect: (id: string) => void) {
+    this.setCategories([{ id: 'default', label: 'Items', items }], onSelect);
   }
   
   private rebuildItems() {
@@ -89,15 +106,54 @@ export class DishMenu3D {
       this.group.remove(label);
       (label.material as THREE.SpriteMaterial).dispose();
     });
+    if (this.centerToggle) {
+      this.group.remove(this.centerToggle);
+      this.centerToggle.geometry.dispose();
+      (this.centerToggle.material as THREE.Material).dispose();
+      this.centerToggle = null;
+    }
+    if (this.centerLabel) {
+      this.group.remove(this.centerLabel);
+      (this.centerLabel.material as THREE.SpriteMaterial).dispose();
+      this.centerLabel = null;
+    }
     this.items = [];
     this.labels = [];
     
+    if (this.categories.length === 0) return;
+    
+    const currentCategory = this.categories[this.currentCategoryIndex];
+    const menuItems = currentCategory.items;
+    
+    // Create center toggle if multiple categories
+    if (this.categories.length > 1) {
+      const toggleGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.03, 16);
+      const toggleMat = new THREE.MeshStandardMaterial({
+        color: 0xff8c42,
+        metalness: 0.6,
+        roughness: 0.2,
+        emissive: 0xff8c42,
+        emissiveIntensity: 0.2,
+      });
+      this.centerToggle = new THREE.Mesh(toggleGeo, toggleMat);
+      this.centerToggle.position.set(0, 0.1, -0.1);
+      this.centerToggle.rotation.x = -Math.PI * 0.3;
+      this.centerToggle.userData = { isCategoryToggle: true };
+      this.group.add(this.centerToggle);
+      
+      // Center label showing current category
+      this.centerLabel = this.createLabel(currentCategory.label);
+      this.centerLabel.position.set(0, 0.25, -0.1);
+      this.centerLabel.visible = true;
+      this.group.add(this.centerLabel);
+    }
+    
     // Create new items in arc
-    const count = this.menuItems.length;
+    const count = menuItems.length;
     const startAngle = -this.dishArc / 2;
     const angleStep = this.dishArc / Math.max(count - 1, 1);
     
-    this.menuItems.forEach((menuItem, i) => {
+    menuItems.forEach((menuItem, i) => {
       const angle = count === 1 ? 0 : startAngle + angleStep * i;
       const x = Math.sin(angle) * this.dishRadius * 0.8;
       const z = Math.cos(angle) * this.dishRadius * 0.3 - this.dishRadius * 0.3;
@@ -116,7 +172,7 @@ export class DishMenu3D {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(x, y, z);
       mesh.rotation.x = -Math.PI * 0.3; // Tilt toward camera
-      mesh.userData = { menuItemId: menuItem.id, originalColor: menuItem.color || 0x4a9eff };
+      mesh.userData = { menuItemId: menuItem.id, url: menuItem.url, originalColor: menuItem.color || 0x4a9eff };
       
       this.items.push(mesh);
       this.group.add(mesh);
@@ -128,6 +184,11 @@ export class DishMenu3D {
       this.labels.push(label);
       this.group.add(label);
     });
+  }
+  
+  private nextCategory() {
+    this.currentCategoryIndex = (this.currentCategoryIndex + 1) % this.categories.length;
+    this.rebuildItems();
   }
   
   private createLabel(text: string): THREE.Sprite {
@@ -211,12 +272,17 @@ export class DishMenu3D {
     if (!this.isVisible) return null;
     
     this.raycaster.setFromCamera(mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.items);
+    
+    // Check items and center toggle
+    const allInteractable = [...this.items];
+    if (this.centerToggle) allInteractable.push(this.centerToggle);
+    
+    const intersects = this.raycaster.intersectObjects(allInteractable);
     
     // Reset previous hover
     if (this.hoveredItem) {
       const mat = this.hoveredItem.material as THREE.MeshStandardMaterial;
-      mat.emissiveIntensity = 0.1;
+      mat.emissiveIntensity = this.hoveredItem.userData.isCategoryToggle ? 0.2 : 0.1;
       const idx = this.items.indexOf(this.hoveredItem);
       if (idx >= 0 && this.labels[idx]) {
         this.labels[idx].visible = false;
@@ -226,6 +292,16 @@ export class DishMenu3D {
     
     if (intersects.length > 0) {
       const item = intersects[0].object as THREE.Mesh;
+      
+      // Center toggle hover
+      if (item.userData.isCategoryToggle) {
+        this.hoveredItem = item;
+        const mat = item.material as THREE.MeshStandardMaterial;
+        mat.emissiveIntensity = 0.6;
+        return '__toggle__';
+      }
+      
+      // Item hover
       if (item.userData.menuItemId) {
         this.hoveredItem = item;
         const mat = item.material as THREE.MeshStandardMaterial;
@@ -248,12 +324,32 @@ export class DishMenu3D {
    * Handle click
    */
   handleClick(mouse: THREE.Vector2): boolean {
-    const id = this.checkInteraction(mouse);
-    if (id && this.onSelect) {
-      this.onSelect(id);
-      this.hide();
-      return true;
+    if (!this.isVisible) return false;
+    
+    this.raycaster.setFromCamera(mouse, this.camera);
+    
+    const allInteractable = [...this.items];
+    if (this.centerToggle) allInteractable.push(this.centerToggle);
+    
+    const intersects = this.raycaster.intersectObjects(allInteractable);
+    
+    if (intersects.length > 0) {
+      const item = intersects[0].object as THREE.Mesh;
+      
+      // Center toggle clicked - switch category
+      if (item.userData.isCategoryToggle) {
+        this.nextCategory();
+        return true;
+      }
+      
+      // Item clicked
+      if (item.userData.menuItemId && this.onSelect) {
+        this.onSelect(item.userData.menuItemId, item.userData.url);
+        this.hide();
+        return true;
+      }
     }
+    
     return false;
   }
   

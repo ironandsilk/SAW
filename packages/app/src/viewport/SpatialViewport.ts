@@ -94,18 +94,36 @@ export class SpatialViewport {
     this.createDish = new DishMenu3D(this.camera);
     this.scene.add(this.createDish.group);
     
-    this.createDish.setItems([
-      { id: 'cube', label: 'Cube', color: 0x4a9eff },
-      { id: 'sphere', label: 'Sphere', color: 0xff8c42 },
-      { id: 'pyramid', label: 'Pyramid', color: 0x42ff8c },
-      { id: 'cylinder', label: 'Cylinder', color: 0xff42a0 },
-      { id: 'torus', label: 'Torus', color: 0xa042ff },
-      { id: 'plane', label: 'Plane', color: 0x42f0ff },
-      { id: 'humanoid', label: 'Humanoid', color: 0xffff42 },
-      { id: 'terrain', label: 'Terrain', color: 0x8cff42 },
-    ], (id) => {
-      console.log('3D UI Create:', id);
-      window.dispatchEvent(new CustomEvent('create-object', { detail: { type: id } }));
+    this.createDish.setCategories([
+      {
+        id: 'basics',
+        label: 'Basics',
+        items: [
+          { id: 'cube', label: 'Cube', color: 0x4a9eff },
+          { id: 'sphere', label: 'Sphere', color: 0xff8c42 },
+          { id: 'pyramid', label: 'Pyramid', color: 0x42ff8c },
+          { id: 'cylinder', label: 'Cylinder', color: 0xff42a0 },
+          { id: 'torus', label: 'Torus', color: 0xa042ff },
+          { id: 'plane', label: 'Plane', color: 0x42f0ff },
+          { id: 'humanoid', label: 'Humanoid', color: 0xffff42 },
+          { id: 'terrain', label: 'Terrain', color: 0x8cff42 },
+        ]
+      },
+      {
+        id: 'store',
+        label: 'SAW Store',
+        items: [
+          { 
+            id: 'shoe', 
+            label: 'Sneaker', 
+            color: 0xff8c42,
+            url: 'https://raw.githubusercontent.com/ArtCodeStudio/nike-jordan-1-3d-model-three/main/nike_air_jordan_1_with_drip.glb'
+          },
+        ]
+      }
+    ], (id, url) => {
+      console.log('3D UI Create:', id, url ? `URL: ${url}` : '');
+      window.dispatchEvent(new CustomEvent('create-object', { detail: { type: id, url } }));
     });
     
     // Mouse tracking for 3D UI
