@@ -1,0 +1,28 @@
+{
+  "version": "0.1.0",
+  "timestamp": "2026-02-07T22:30:00-06:00",
+  "commit": "09133fe",
+  "status": "shipped",
+  "epics": [
+    {
+      "id": "1.1",
+      "name": "Camera System",
+      "progress": "partial",
+      "stories": [
+        { "name": "Implement free camera with Bryce-style movement", "status": "done" },
+        { "name": "Add camera presets (top, front, side, perspective)", "status": "done" },
+        { "name": "Support camera bookmarks / saved views", "status": "todo" },
+        { "name": "Implement smooth transitions between camera states", "status": "todo" }
+      ]
+    }
+  ],
+  "changelog": [
+    "Initial scaffold with spatial-first architecture",
+    "Bryce-style camera controls (orbit, pan, dolly)",
+    "View presets (perspective, top, front, side)",
+    "Light/dark theme support",
+    "Core contracts (shell, input, scene, panel)",
+    "Web shell with Three.js viewport"
+  ],
+  "notes": "Foundation release. Spatial editing is the core paradigm."
+}

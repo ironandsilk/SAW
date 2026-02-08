@@ -1,0 +1,87 @@
+{
+  "lastUpdated": "2026-02-07T22:30:00-06:00",
+  "themes": [
+    {
+      "id": 1,
+      "name": "Camera & Navigation",
+      "status": "in-progress",
+      "epics": [
+        {
+          "id": "1.1",
+          "name": "Camera System",
+          "status": "in-progress",
+          "progress": 50,
+          "stories": {
+            "total": 4,
+            "done": 2,
+            "inProgress": 0,
+            "todo": 2
+          }
+        },
+        { "id": "1.2", "name": "Viewport Controls", "status": "todo", "progress": 0 },
+        { "id": "1.3", "name": "Autonomous Camera Adaptation", "status": "todo", "progress": 0 },
+        { "id": "1.4", "name": "Input Abstraction", "status": "todo", "progress": 0 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Environment Editing",
+      "status": "todo",
+      "epics": [
+        { "id": "2.1", "name": "Scene Hierarchy", "status": "todo", "progress": 0 },
+        { "id": "2.2", "name": "Scene List", "status": "todo", "progress": 0 },
+        { "id": "2.3", "name": "Environment Properties", "status": "todo", "progress": 0 },
+        { "id": "2.4", "name": "Self-Managing Environment", "status": "todo", "progress": 0 },
+        { "id": "2.5", "name": "Input Abstraction", "status": "todo", "progress": 0 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Object Editing",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 4,
+      "name": "Format Abstraction Layer",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 5,
+      "name": "World Modeling",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 6,
+      "name": "Reality Anchoring",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 7,
+      "name": "Remote Control",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 8,
+      "name": "Output & Robotics",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 9,
+      "name": "Simulation Training",
+      "status": "todo",
+      "epics": []
+    },
+    {
+      "id": 10,
+      "name": "Robot Integration",
+      "status": "todo",
+      "epics": []
+    }
+  ]
+}
