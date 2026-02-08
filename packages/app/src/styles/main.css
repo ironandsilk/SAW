@@ -292,6 +292,18 @@ html, body {
 
 .nav-dropdown-right .features-dropdown-content {
   min-width: 900px;
+  max-width: calc(100vw - 40px);
+  right: 0;
+  left: auto;
+}
+
+/* Position features dropdown from right edge with room to breathe */
+#features-dropdown-container .nav-dropdown-content {
+  position: fixed;
+  top: var(--top-bar-height);
+  right: 20px;
+  left: auto;
+  margin-top: 4px;
 }
 
 .nav-dropdown-content.create-dropdown {
