@@ -210,38 +210,41 @@ function initTheme() {
   document.documentElement.setAttribute('data-theme', theme);
   document.documentElement.setAttribute('data-glass', String(glass));
   
-  // Add toggles to top bar
-  const topBar = document.getElementById('top-bar');
-  if (topBar) {
-    // Glass toggle
-    const glassToggle = document.createElement('button');
-    glassToggle.className = 'glass-toggle';
-    glassToggle.textContent = glass ? 'Solid' : 'Glass';
-    glassToggle.title = 'Toggle iOS-style glass blur effect';
-    glassToggle.addEventListener('click', () => {
+  // Get view menu options
+  const glassOption = document.getElementById('glass-option');
+  const themeOption = document.getElementById('theme-option');
+  
+  // Set initial states
+  if (glass && glassOption) {
+    glassOption.classList.add('active');
+  }
+  if (theme === 'light' && themeOption) {
+    themeOption.classList.add('active');
+  }
+  
+  // Glass toggle
+  if (glassOption) {
+    glassOption.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-glass') === 'true';
       const next = !current;
       document.documentElement.setAttribute('data-glass', String(next));
       localStorage.setItem('saw-glass', String(next));
-      glassToggle.textContent = next ? 'Solid' : 'Glass';
+      glassOption.classList.toggle('active', next);
     });
-    topBar.appendChild(glassToggle);
-    
-    // Theme toggle
-    const themeToggle = document.createElement('button');
-    themeToggle.className = 'theme-toggle';
-    themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
-    themeToggle.addEventListener('click', () => {
+  }
+  
+  // Theme toggle
+  if (themeOption) {
+    themeOption.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('saw-theme', next);
-      themeToggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+      themeOption.classList.toggle('active', next === 'light');
       
       // Dispatch event for viewport background update
       window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: next } }));
     });
-    topBar.appendChild(themeToggle);
   }
   
   // Listen for system theme changes
@@ -249,8 +252,9 @@ function initTheme() {
     if (!localStorage.getItem('saw-theme')) {
       const theme = e.matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', theme);
-      const toggle = document.querySelector('.theme-toggle');
-      if (toggle) toggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+      if (themeOption) {
+        themeOption.classList.toggle('active', theme === 'light');
+      }
       window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme } }));
     }
   });
