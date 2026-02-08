@@ -127,7 +127,6 @@ export class SpatialViewport {
     });
     
     // Mouse tracking for 3D UI
-    const canvas = shell.getCanvas();
     canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
