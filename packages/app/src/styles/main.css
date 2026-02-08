@@ -419,6 +419,186 @@ html, body {
 
 .feature-item {
   position: relative;
+  cursor: pointer;
+}
+
+.feature-item.selected {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px var(--accent-blue);
+}
+
+/* === FEATURE DETAIL PANEL === */
+.feature-detail {
+  display: none;
+  border-top: 1px solid var(--border-dark);
+  padding: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.feature-detail.open {
+  display: block;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-id {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+.detail-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.detail-close:hover {
+  color: var(--text-primary);
+}
+
+.detail-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.detail-stat {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.detail-version {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.detail-epics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-epic {
+  background: var(--bg-input);
+  border: 1px solid var(--border-dark);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.epic-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.epic-id {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 24px;
+}
+
+.epic-name {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.epic-progress-bar {
+  width: 60px;
+  height: 4px;
+  background: var(--bg-dark);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.epic-progress-fill {
+  height: 100%;
+  background: var(--accent-blue);
+  transition: width 0.3s;
+}
+
+.epic-stories {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.epic-stories-empty {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.story-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  padding: 2px 0;
+}
+
+.story-item.done {
+  color: var(--text-muted);
+}
+
+.story-item.done .story-name {
+  text-decoration: line-through;
+}
+
+.story-check {
+  color: var(--text-muted);
+  font-size: 10px;
+  min-width: 12px;
+}
+
+.story-item.done .story-check {
+  color: var(--accent-green);
+}
+
+.story-name {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* Glass effect for detail panel */
+[data-glass="true"] .feature-detail {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+[data-glass="true"] .detail-epic {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: var(--glass-border);
 }
 
 /* === VIEW MENU (Eye icon with expanding options) === */

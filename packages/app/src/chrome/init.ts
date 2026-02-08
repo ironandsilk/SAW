@@ -136,34 +136,214 @@ function initFeaturesDropdown() {
   const btn = document.getElementById('features-btn');
   const dropdown = btn?.closest('.nav-dropdown');
   const timeline = document.getElementById('features-timeline');
+  const dropdownContent = document.getElementById('features-dropdown');
   
-  if (!btn || !dropdown || !timeline) return;
+  if (!btn || !dropdown || !timeline || !dropdownContent) return;
   
   // Toggle dropdown
   btn.addEventListener('click', () => {
     dropdown.classList.toggle('open');
+    // Close detail panel when closing dropdown
+    if (!dropdown.classList.contains('open')) {
+      closeFeatureDetail();
+    }
   });
   
   // Close on click outside
   document.addEventListener('click', (e) => {
     if (!dropdown.contains(e.target as Node)) {
       dropdown.classList.remove('open');
+      closeFeatureDetail();
     }
   });
   
-  // Feature data - will be loaded from tracking/epics.json later
+  // Feature data with epics and stories
   const features = [
-    { id: 1, name: 'Camera & Navigation', status: 'in-progress', version: 'v0.1', progress: 25, active: true },
-    { id: 2, name: 'Environment Editing', status: 'todo', version: '-', progress: 0, active: true },
-    { id: 3, name: 'Object Editing', status: 'todo', version: '-', progress: 0, active: true },
-    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 5, name: 'World Modeling', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 7, name: 'Remote Control', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', progress: 0, active: false },
-    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', progress: 0, active: false },
+    { 
+      id: 1, 
+      name: 'Camera & Navigation', 
+      status: 'in-progress', 
+      version: 'v0.1', 
+      progress: 25, 
+      active: true,
+      epics: [
+        { 
+          id: '1.1', 
+          name: 'Camera System', 
+          progress: 50,
+          stories: [
+            { name: 'Implement free camera with Bryce-style movement', status: 'done' },
+            { name: 'Add camera presets (top, front, side, perspective)', status: 'done' },
+            { name: 'Support camera bookmarks / saved views', status: 'todo' },
+            { name: 'Implement smooth transitions between camera states', status: 'todo' },
+          ]
+        },
+        { 
+          id: '1.2', 
+          name: 'Viewport Controls', 
+          progress: 0,
+          stories: [
+            { name: 'Multi-viewport support (single, split, quad)', status: 'todo' },
+            { name: 'Viewport-specific render modes', status: 'todo' },
+            { name: 'Grid and axis helpers with toggle', status: 'todo' },
+          ]
+        },
+        { 
+          id: '1.3', 
+          name: 'Autonomous Camera Adaptation', 
+          progress: 0,
+          stories: [
+            { name: 'Agent-driven fly/orbit mode switching', status: 'todo' },
+            { name: 'Auto-framing on points of interest', status: 'todo' },
+          ]
+        },
+        { 
+          id: '1.4', 
+          name: 'Input Abstraction', 
+          progress: 0,
+          stories: [
+            { name: 'Mouse/keyboard camera controls', status: 'todo' },
+            { name: 'Voice commands for camera', status: 'todo' },
+            { name: 'Gesture input (hand tracking)', status: 'todo' },
+          ]
+        },
+      ]
+    },
+    { 
+      id: 2, 
+      name: 'Environment Editing', 
+      status: 'todo', 
+      version: '-', 
+      progress: 0, 
+      active: true,
+      epics: [
+        { id: '2.1', name: 'Scene Hierarchy', progress: 0, stories: [
+          { name: 'Implement scene graph data structure', status: 'todo' },
+          { name: 'Scene tree UI with expand/collapse', status: 'todo' },
+          { name: 'Drag-and-drop reparenting', status: 'todo' },
+        ]},
+        { id: '2.2', name: 'Scene List', progress: 0, stories: [] },
+        { id: '2.3', name: 'Environment Properties', progress: 0, stories: [] },
+      ]
+    },
+    { id: 3, name: 'Object Editing', status: 'todo', version: '-', progress: 0, active: true, epics: [
+      { id: '3.1', name: 'Object Hierarchy', progress: 0, stories: [] },
+      { id: '3.2', name: 'Transform Tools', progress: 0, stories: [] },
+      { id: '3.3', name: 'Object Properties Panel', progress: 0, stories: [] },
+    ]},
+    { id: 4, name: 'Format Abstraction', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '4.1', name: 'Import Pipeline - 3D Formats', progress: 0, stories: [] },
+      { id: '4.2', name: 'Import Pipeline - CAD Formats', progress: 0, stories: [] },
+      { id: '4.3', name: 'Export Pipeline', progress: 0, stories: [] },
+    ]},
+    { id: 5, name: 'World Modeling', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '5.1', name: 'Threshold System', progress: 0, stories: [] },
+      { id: '5.2', name: 'World Model Abstraction', progress: 0, stories: [] },
+      { id: '5.3', name: 'Vision Pipeline Hooks', progress: 0, stories: [] },
+    ]},
+    { id: 6, name: 'Reality Anchoring', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '6.1', name: 'Reality Capture', progress: 0, stories: [] },
+      { id: '6.2', name: 'Scan & Reconstruction', progress: 0, stories: [] },
+      { id: '6.3', name: 'Geospatial Anchoring', progress: 0, stories: [] },
+    ]},
+    { id: 7, name: 'Remote Control', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '7.1', name: 'Control Mode System', progress: 0, stories: [] },
+      { id: '7.2', name: 'Remote Input Pipeline', progress: 0, stories: [] },
+      { id: '7.3', name: 'Agent Hierarchy Extension', progress: 0, stories: [] },
+    ]},
+    { id: 8, name: 'Output & Robotics', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '8.1', name: 'Scene Serialization', progress: 0, stories: [] },
+      { id: '8.2', name: 'Robotics Abstraction', progress: 0, stories: [] },
+      { id: '8.3', name: 'Output Integration', progress: 0, stories: [] },
+    ]},
+    { id: 9, name: 'Simulation Training', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '9.1', name: 'Training Environment', progress: 0, stories: [] },
+      { id: '9.2', name: 'VLA Policy Integration', progress: 0, stories: [] },
+      { id: '9.3', name: 'Sim-to-Real Transfer', progress: 0, stories: [] },
+    ]},
+    { id: 10, name: 'Robot Integration', status: 'todo', version: '-', progress: 0, active: false, epics: [
+      { id: '10.1', name: 'Single Robot Connection', progress: 0, stories: [] },
+      { id: '10.2', name: 'Robot Farms', progress: 0, stories: [] },
+    ]},
   ];
+  
+  // Create detail panel
+  let detailPanel = document.getElementById('feature-detail');
+  if (!detailPanel) {
+    detailPanel = document.createElement('div');
+    detailPanel.id = 'feature-detail';
+    detailPanel.className = 'feature-detail';
+    dropdownContent.appendChild(detailPanel);
+  }
+  
+  function closeFeatureDetail() {
+    detailPanel!.classList.remove('open');
+    timeline.querySelectorAll('.feature-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+  }
+  
+  function showFeatureDetail(featureId: number) {
+    const feature = features.find(f => f.id === featureId);
+    if (!feature) return;
+    
+    // Mark selected
+    timeline.querySelectorAll('.feature-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    timeline.querySelector(`[data-feature-id="${featureId}"]`)?.classList.add('selected');
+    
+    // Build detail content
+    const epicCount = feature.epics.length;
+    const storyCount = feature.epics.reduce((sum, e) => sum + e.stories.length, 0);
+    const doneCount = feature.epics.reduce((sum, e) => sum + e.stories.filter(s => s.status === 'done').length, 0);
+    
+    detailPanel!.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-title">
+          <span class="detail-id">${feature.id}</span>
+          <span class="detail-name">${feature.name}</span>
+        </div>
+        <button class="detail-close" id="detail-close">x</button>
+      </div>
+      <div class="detail-meta">
+        <span class="detail-stat">${epicCount} epics</span>
+        <span class="detail-stat">${doneCount}/${storyCount} stories</span>
+        <span class="detail-version">${feature.version}</span>
+      </div>
+      <div class="detail-epics">
+        ${feature.epics.map(epic => `
+          <div class="detail-epic">
+            <div class="epic-header">
+              <span class="epic-id">${epic.id}</span>
+              <span class="epic-name">${epic.name}</span>
+              <div class="epic-progress-bar">
+                <div class="epic-progress-fill" style="width: ${epic.progress}%"></div>
+              </div>
+            </div>
+            ${epic.stories.length ? `
+              <div class="epic-stories">
+                ${epic.stories.map(story => `
+                  <div class="story-item ${story.status}">
+                    <span class="story-check">${story.status === 'done' ? '&#10003;' : '&#9675;'}</span>
+                    <span class="story-name">${story.name}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : '<div class="epic-stories-empty">No stories defined yet</div>'}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    // Close button
+    document.getElementById('detail-close')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeFeatureDetail();
+    });
+    
+    detailPanel!.classList.add('open');
+  }
   
   timeline.innerHTML = features.map(feature => `
     <div class="feature-item ${feature.active ? 'active' : ''}" data-feature-id="${feature.id}">
@@ -181,6 +361,17 @@ function initFeaturesDropdown() {
       </div>
     </div>
   `).join('');
+  
+  // Click feature to show detail
+  timeline.querySelectorAll('.feature-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      // Don't trigger if clicking switch
+      if ((e.target as HTMLElement).classList.contains('feature-switch')) return;
+      
+      const featureId = parseInt((item as HTMLElement).dataset.featureId || '0');
+      showFeatureDetail(featureId);
+    });
+  });
   
   // Toggle active/inactive modules
   timeline.querySelectorAll('.feature-switch').forEach(sw => {
