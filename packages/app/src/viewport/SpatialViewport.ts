@@ -142,6 +142,11 @@ export class SpatialViewport {
       this.createDish.toggle();
     });
     
+    // Listen for explicit hide from mode toggle
+    window.addEventListener('hide-3d-create-menu', () => {
+      this.createDish.hide();
+    });
+    
     // Glass mode sync
     window.addEventListener('glass-mode-change', ((e: CustomEvent) => {
       this.createDish.setGlassMode(e.detail.enabled);

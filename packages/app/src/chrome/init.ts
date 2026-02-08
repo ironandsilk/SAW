@@ -494,71 +494,43 @@ function initCreatePanel() {
   if (!createBtn || !dropdown || !panel || !modeToggle) return;
   
   const savedMode = localStorage.getItem('saw-create-mode');
-  let isRadialMode = savedMode === 'radial';
-  
-  // Apply saved mode
-  if (isRadialMode) {
-    panel.classList.add('radial-mode');
-    document.body.appendChild(panel);
-  }
-  
-  // 3D mode handled separately - will be initialized when viewport ready
+  // Only two modes now: dropdown (HTML) or 3D (scene dish)
+  let is3DMode = savedMode === '3d' || savedMode === 'radial'; // treat radial as 3D now
   
   // Toggle dropdown (depends on mode)
   createBtn.addEventListener('click', () => {
     if (is3DMode) {
-      // In 3D mode, toggle 3D menu in viewport
+      // In 3D mode, toggle 3D dish menu in viewport
       window.dispatchEvent(new CustomEvent('toggle-3d-create-menu'));
-    } else if (isRadialMode) {
-      // In radial mode, toggle visibility of body-appended panel
-      panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
     } else {
       dropdown.classList.toggle('open');
     }
   });
   
-  // Close on click outside (normal mode)
+  // Close on click outside (dropdown mode only)
   document.addEventListener('click', (e) => {
-    if (!isRadialMode && !dropdown.contains(e.target as Node)) {
+    if (!is3DMode && !dropdown.contains(e.target as Node)) {
       dropdown.classList.remove('open');
-    }
-    // In radial mode, close if clicking outside panel
-    if (isRadialMode && !panel.contains(e.target as Node) && e.target !== createBtn) {
-      panel.style.display = 'none';
     }
   });
   
-  let is3DMode = localStorage.getItem('saw-create-mode') === '3d';
-  
-  // Mode toggle - cycles: dropdown -> radial -> 3D -> dropdown
+  // Mode toggle - cycles: dropdown <-> 3D
   modeToggle.addEventListener('click', (e) => {
     e.stopPropagation();
     
-    if (!isRadialMode && !is3DMode) {
-      // dropdown -> radial
-      isRadialMode = true;
-      is3DMode = false;
-      localStorage.setItem('saw-create-mode', 'radial');
-      panel.classList.add('radial-mode');
-      document.body.appendChild(panel);
-      panel.style.display = 'flex';
-      dropdown.classList.remove('open');
-    } else if (isRadialMode && !is3DMode) {
-      // radial -> 3D
-      isRadialMode = false;
+    if (!is3DMode) {
+      // dropdown -> 3D
       is3DMode = true;
       localStorage.setItem('saw-create-mode', '3d');
-      panel.classList.remove('radial-mode');
-      panel.style.display = 'none';
+      dropdown.classList.remove('open');
       // Show 3D menu
       window.dispatchEvent(new CustomEvent('toggle-3d-create-menu'));
     } else {
       // 3D -> dropdown
-      isRadialMode = false;
       is3DMode = false;
       localStorage.setItem('saw-create-mode', 'dropdown');
-      panel.style.display = '';
-      document.getElementById('create-dropdown')?.appendChild(panel);
+      // Hide 3D menu
+      window.dispatchEvent(new CustomEvent('hide-3d-create-menu'));
       dropdown.classList.add('open');
     }
   });
